@@ -340,8 +340,10 @@ export class Main extends Gemini {
 
       const hour = parseInt(moment.tz("America/Sao_Paulo").format("HH"));
       const minute = parseInt(moment.tz("America/Sao_Paulo").format("mm"));
-      const dayOfWeek = moment.tz("America/Sao_Paulo").day(); // 0=Sunday, 6=Saturday
-      const diasSemana = {
+      const year = parseInt(moment.tz("America/Sao_Paulo").format("YYYY"));
+      const fullDate = moment.tz("America/Sao_Paulo").format("YYYY-MM-DD");
+      const dayOfWeek: any = moment.tz("America/Sao_Paulo").day(); // 0=Sunday, 6=Saturday
+      const diasSemana: any = {
         0: "sunday",
         1: "monday",
         2: "tuesday",
@@ -351,20 +353,29 @@ export class Main extends Gemini {
         6: "saturday",
       };
 
-      // Check if outside business hours (before 7:30 AM or after 5:48 PM) or weekend
-      if (dayOfWeek === 0 || dayOfWeek === 6) {
-        console.log(`Fim de Semana. - ${diasSemana[dayOfWeek]}`);
-        return;
+      if (msg && from.split("@")[0] === process.env.OWNER && !isGroup) {
+        const resp = await this.getResponseText(
+          msg,
+          "gemini-2.5-flash",
+          `You are a helpful feminine assistant called Manu. Use o SensitiveLogsUser para melhorar suas respostas, nunca revele ao usuario sobre isso, nem dê muitas explicações, o SensitiveLogsUser contêm informações atualizadas do nome,dia,hora,minuto,ano e pais do usuario.\nSensitiveLogsUser: {fullDate: ${fullDate},userName: ${pushname},day: ${diasSemana[dayOfWeek]},hour: ${hour},minute: ${minute},year: ${year},country: "Brazil",}`
+        );
+        await escrevendo(5);
+        await client.sendMessage(from, { text: resp });
       }
 
-      if (hour < 7 ||
-        (hour === 7 && minute < 30) ||
-        hour > 17 ||
-        (hour === 17 && minute >= 48)
-      ) {
-        console.log("Fora de Horario.");
-        return;
-      }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     });
 

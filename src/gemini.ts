@@ -52,7 +52,7 @@ export class Gemini {
   constructor() {
     //Models Avaibles
     this.models = [
-      { modelName: "gemini-2.5-flash", thinkingBudget: 32768 },
+      { modelName: "gemini-2.5-flash", thinkingBudget: 24576 },
       { modelName: "gemini-2.5-pro", thinkingBudget: 32768 },
     ];
     const apiKey: string | undefined = process.env.GEMINI_API_KEY;
@@ -70,8 +70,9 @@ export class Gemini {
 
   public async getResponseText(
     prompt: string,
-    model: Models = "gemini-2.5-flash"
-  ): Promise<void> {
+    model: Models = "gemini-2.5-flash",
+    systemInstruction: string = "You are a helpful feminine assistant called Manu."
+  ): Promise<any> {
     try {
       // Object of Response Stream to All Models
       const response: any = await this.ai.models.generateContent({
@@ -84,31 +85,28 @@ export class Gemini {
               this.models.find((m) => m.modelName === model)?.thinkingBudget ||
               8192,
           },
-          systemInstruction:
-            "You are a helpful feminine assistant called Manu.",
+          systemInstruction: systemInstruction,
           temperature: 1,
         },
       });
-      // for await (const chunk of response) {
-      //   for (let i = 0; i < chunk.text.length; i++) {
-      //     process.stdout.write(chunk.text[i]);
-      //   }
-      // }
 
       const parts: any[] = response?.candidates?.[0]?.content?.parts || [];
-      parts.forEach((part) => {
+      const result = parts.map((part) => {
         if (part.text) {
-          console.log(part.text);
+          return part.text;
         }
 
         if (part.executableCode && part.executableCode.code) {
-          console.log(part.executableCode.code);
+          return part.executableCode.code;
         }
 
         if (part.codeExecutionResult && part.codeExecutionResult.output) {
-          console.log(part.codeExecutionResult.output);
+          return part.codeExecutionResult.output;
         }
-      });
+        return "";
+      }).join("");
+
+      return result;
 
     } catch (error) {
       throw new Error(`Error generating content: ${error}`);
