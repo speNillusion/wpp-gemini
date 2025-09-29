@@ -1,6 +1,6 @@
 ﻿# Gemini API Whatsapp
 
-- Base: [Gemini API Text Generation](https://ai.google.dev/gemini-api/docs/text-generation), [js-genai](https://googleapis.github.io/js-genai/release_docs/index.html)
+- Base: [Gemini API Text Generation](https://ai.google.dev/gemini-api/docs/text-generation), [js-genai](https://googleapis.github.io/js-genai/release_docs/index.html), [baileys-pro](https://www.npmjs.com/package/baileys-pro?activeTab=readme#connecting-account)
 
 ## Requisitos
 
